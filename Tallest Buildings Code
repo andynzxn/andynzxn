@@ -1,0 +1,173 @@
+//BY: Andy Ng and Benson Yeung
+
+//lists for building properties
+var buildingName = getColumn("World's Tallest Buildings", "Name");
+var buildingRank = getColumn("World's Tallest Buildings", "Rank");
+var buildingImage = getColumn("World's Tallest Buildings", "Image");
+var buildingCity = getColumn("World's Tallest Buildings", "City");
+var buildingCountry = getColumn("World's Tallest Buildings", "Country");
+var buildingHeight = getColumn("World's Tallest Buildings", "Height in feet");
+var buildingOpen = getColumn("World's Tallest Buildings", "Year opened");
+
+var rank;
+var nameB;
+
+//brings back to the home screen
+onEvent("homeButton1", "click", function() {
+  setScreen("homeScreen");
+});
+onEvent("homeButton2", "click", function() {
+  setScreen("homeScreen");
+});
+onEvent("homeButton3", "click", function() {
+  setScreen("homeScreen");
+});
+onEvent("homeButton4", "click", function() {
+  setScreen("homeScreen");
+  newTallest = 0;
+});
+onEvent("homeButton5", "click", function() {
+  setScreen("homeScreen");    
+  newTallest = 0;
+});
+
+//making a quiz
+var count = [];
+var tallest;
+var newTallest = 0;
+
+onEvent("quizButton", "click", function() {
+  setScreen("quizScreen1");
+  //assigning random buildings
+  for(var i = 1 ; i < 5; i++) {
+    var random = randomNumber(0, buildingRank.length - 1);
+    setImageURL("quizImage" + i, buildingImage [random]);
+
+    appendItem(count, random);
+    console.log(count);
+    
+    //tracks the tallest building of the four pictures
+    tallest = random;
+    if (tallest > newTallest) {
+      newTallest = tallest;
+      console.log("newTallest: " + newTallest);
+    }
+    
+  }
+  //result from quiz
+  var count0 = count[0];
+  var count1 = count[1];
+  var count2 = count[2];
+  var count3 = count[3];
+
+  onEvent("quizImage1", "click", function() {
+    if(count0 == newTallest) {
+     setScreen("correctScreen");
+    }
+    else {
+      setScreen("wrongScreen");
+
+    }
+  });
+
+  onEvent("quizImage2", "click", function() {
+    if(count1 == newTallest) {
+     setScreen("correctScreen");
+    }else {
+      setScreen("wrongScreen");
+    }
+  });
+  
+  onEvent("quizImage3", "click", function() {
+    if(count2 == newTallest) {
+     setScreen("correctScreen");
+    }
+    else {
+      setScreen("wrongScreen");
+    }
+  });
+  
+  onEvent("quizImage4", "click", function() {
+    if(count3 == newTallest) {
+     setScreen("correctScreen");
+    }
+    else {
+      setScreen("wrongScreen");
+    
+   }
+   
+  });
+  //resetting variables
+  tallest = 0;
+  count = [];
+});
+
+
+
+
+//rank list
+onEvent("rankingsButton", "click", function() {
+  setScreen ("rankingScreen");
+  setProperty("rankListNumber", "text", top10.join("\n" + "\n"));
+  setProperty("rankListName", "text", top10Name.join("\n" + "\n"));
+});
+
+//filtered top10 rank 
+var top10 = [];
+for (var i = 0; i < buildingRank.length; i++) {
+  rank = buildingRank[i];
+  if (rank < 11) {
+    appendItem(top10, rank);
+  }
+}
+
+//filtered top10 names
+var top10Name = [];
+for (var i = 0; i < 10; i++) {
+  nameB = buildingName[i];
+  appendItem(top10Name, nameB);
+}
+
+//changes to buildingScreen and shows the building that you chose from dropdown
+insertItem(buildingName, 0 , "choose an option");
+setProperty("dropdown", "options", buildingName);
+onEvent("dropdown", "change", function() {
+  setScreen("buildingScreen");
+  removeItem(buildingName, 0);
+  var index = getText("dropdown");
+  for (var i = 0; i < buildingName.length; i++) {
+    if(index == buildingName[i]) {
+      chooseBuilding(i);
+    }
+  }
+});
+
+
+//chooses a building
+onEvent ("buttonGetBuilding", "click", function() {
+  updateScreen();
+});
+
+
+//function to get a random building
+function updateScreen() {
+  var index = randomNumber(0, buildingName.length-1 );
+  setText("nameOutput", buildingName[index]);
+  setText("rankOutput", "#" + buildingRank[index]);
+  setText("locationOutput", "Location: \n" + buildingCity[index] + ", " + buildingCountry[index]);
+  setText("heightOutput", buildingHeight[index] + " feet tall");
+  setText("openOutput", "Opened in " + buildingOpen [index]);  
+  setImageURL("imageOutput", buildingImage [index]);
+}
+
+function chooseBuilding(index) {
+  setText("nameOutput", buildingName[index]);
+  setText("rankOutput", "#" + buildingRank[index]);
+  setText("locationOutput", "Location: \n" + buildingCity[index] + ", " + buildingCountry[index]);
+  setText("heightOutput", buildingHeight[index] + " feet tall");
+  setText("openOutput", "Opened in " + buildingOpen [index]);  
+  setImageURL("imageOutput", buildingImage [index]);
+}
+
+
+
